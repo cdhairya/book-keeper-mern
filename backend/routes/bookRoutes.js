@@ -1,5 +1,4 @@
 import express from "express";
-import mongoose from "mongoose";
 import { Book } from "../models/BookModel.js";
 
 const router = express();
@@ -20,13 +19,27 @@ router.post("/", async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-
-  console.log(req.body);
 });
 
 // Get all books
-router.get("/", (req, res) => {
-  res.send("Get / is working...");
+router.get("/", async (req, res) => {
+  try {
+    const books = await Book.find();
+    return res.json(books);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+});
+
+// Get a single book
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const book = await Book.findById(id);
+    return res.json(book);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
 });
 
 export default router;
